@@ -100,6 +100,6 @@ def create_training_data(dir_path):
 
 
 if __name__ == '__main__':
-    data_files_path = r'D:\drug_learning\dataToD\for_train'
-    create_training_data(data_files_path)
+    raw_data_files_path = "../../raw_data/for_train"
+    create_training_data(raw_data_files_path)
     i=9

@@ -40,4 +40,4 @@ def load_and_preprocessing():
 
 if __name__ == '__main__':
     _x, _y, _data_shape = load_and_preprocessing()
-    train_model("5",_x, _y, _data_shape)
+    train_model("4",_x, _y, _data_shape)
