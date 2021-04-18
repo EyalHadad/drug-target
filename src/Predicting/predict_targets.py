@@ -37,7 +37,7 @@ def use_model(_x, _gene, drug_id):
 
 
 if __name__ == '__main__':
-    _drug_id = "DB00641"
+    _drug_id = "DB00822"
     _x, gene = load_and_preprocessing(_drug_id)
     use_model(_x, gene,_drug_id)
     

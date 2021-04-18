@@ -29,5 +29,5 @@ def create_drug_predicting_data(dir_path, drug_id=" "):
 
 if __name__ == '__main__':
     raw_data_files_path = "../../raw_data/for_train"
-    create_drug_predicting_data(raw_data_files_path, 'DB00641')
+    create_drug_predicting_data(raw_data_files_path, 'DB00822')
     i=9

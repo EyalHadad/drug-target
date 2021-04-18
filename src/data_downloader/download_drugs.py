@@ -4,6 +4,8 @@ from src.data_downloader.connection_object import DataConnector
 from sklearn.preprocessing import MinMaxScaler
 from pickle import dump
 
+from src.data_migration.drug_bank_features import get_drug_modalities_data
+
 
 def create_minmax_scalar(dir_path, c_name):
     dict_dir = os.path.join(dir_path, 'dicts')
@@ -38,5 +40,7 @@ def download_drugs_data(is_train,version):
 
 
 if __name__ == '__main__':
-    download_drugs_data("train","5.1.6")
-    download_drugs_data("test","5.1.8")
+    # download_drugs_data("train","5.1.6")
+    get_drug_modalities_data("5.1.6", "../../raw_data/for_train")
+    # download_drugs_data("test","5.1.8")
+    get_drug_modalities_data("5.1.8", "../../raw_data/for_test")
