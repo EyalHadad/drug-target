@@ -58,7 +58,7 @@ def create_targets_dataset(d_path, belong_to_drugs=None):
         print("Remove all targets without known drugs. total shape:", _all_targets.shape)
 
     _all_targets.reset_index(inplace=True,drop=True)
-    _all_targets = transform_cat_feature(_all_targets, 'keywords', os.path.join(d_path, "dicts", "keyword_dict.csv"))
+    _all_targets = transform_cat_feature(_all_targets, 'keywords', os.path.join(d_path, "dicts", "keywords_dict.csv"))
     _all_targets = transform_cat_feature(_all_targets, 'taxon', os.path.join(d_path, "dicts", "taxon_dict.csv"))
     print("---Finish reading targets data---\n")
 

@@ -17,7 +17,7 @@ def create_minmax_scalar(dir_path, c_name):
     scaler.fit(data[[c_name]])
     print("transform data using MinMax scalar")
     data[c_name] = scaler.transform(data[[c_name]])
-    dump(scaler, open(os.path.join(dict_dir,c_name+'_scaler.pkl'), 'wb'))
+    dump(scaler, open(os.path.join(dict_dir,c_name+'_scalar.pkl'), 'wb'))
     print("MinMax scalar saved successfully")
     data.to_csv(os.path.join(dir_path, "drug_weight.csv"),index=False)
     print(c_name, "data scaled and saved successfully")
@@ -40,7 +40,7 @@ def download_drugs_data(is_train,version):
 
 
 if __name__ == '__main__':
-    # download_drugs_data("train","5.1.6")
+    download_drugs_data("train","5.1.6")
     get_drug_modalities_data("5.1.6", "../../raw_data/for_train")
     # download_drugs_data("test","5.1.8")
-    get_drug_modalities_data("5.1.8", "../../raw_data/for_test")
+    # get_drug_modalities_data("5.1.8", "../../raw_data/for_test")

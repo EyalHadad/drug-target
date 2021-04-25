@@ -23,7 +23,7 @@ def get_csvs(version):
     return X_unlabled, modalities_df
 
 
-def calculate_clusters(X_unlabled, modalities_df,dir_path):
+def calculate_clusters(x_unlabled, modalities_df, dir_path):
     LogisticGroupLasso.LOG_LOSSES = True
     pd.set_option('display.max_columns', None)
     pd.set_option('display.width', None)
@@ -36,25 +36,26 @@ def calculate_clusters(X_unlabled, modalities_df,dir_path):
 
     # Adding our features
     X_unlabled_text = extract_text_features(
-        X_unlabled[modalities_df.loc[modalities_df.modality.isin(mods_domain_expert), 'feature']])
-    X_unlabled, modalities_df = add_mods(X_unlabled, X_unlabled_text, modalities_df, 'Text')
+        x_unlabled[modalities_df.loc[modalities_df.modality.isin(mods_domain_expert), 'feature']])
+    x_unlabled, modalities_df = add_mods(x_unlabled, X_unlabled_text, modalities_df, 'Text')
     print(X_unlabled_text.columns)
     text_mods = ['Text']
     print('done processing text')
     num_clusters = 3600  # Number of custers to create. 3600 was optimal in paper.
     clustering_mods = []
     X_cluster = get_col_clusters(
-        X_unlabled[modalities_df.loc[modalities_df.modality.isin(mods_domain_expert), 'feature']], num_clusters)
+        x_unlabled[modalities_df.loc[modalities_df.modality.isin(mods_domain_expert), 'feature']], num_clusters)
     print('clusters head:')
     print(X_cluster.head())
     print(X_cluster.columns)
     mod_name = 'Clusters'
     clustering_mods.append(mod_name)
-    X_unlabled, modalities_df = add_mods(X_unlabled, X_cluster, modalities_df, mod_name)
+    x_unlabled, modalities_df = add_mods(x_unlabled, X_cluster, modalities_df, mod_name)
     print('done clustering')
     # Writing new data to disk
-    X_unlabled.to_csv(os.path.join(dir_path,'drugData_w_text.csv'))
-    X_unlabled.to_csv(os.path.join(dir_path,'modalities_w_text.csv'))
+    x_unlabled=x_unlabled.apply(lambda x: x.astype(str).str.lower())
+    x_unlabled.to_csv(os.path.join(dir_path, 'drug_cluster_features.csv'))
+    modalities_df.to_csv(os.path.join(dir_path,'modalities_w_text.csv'))
 
 
 

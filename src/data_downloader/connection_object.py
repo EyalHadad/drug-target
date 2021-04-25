@@ -58,10 +58,8 @@ class DataConnector(object):
         print("downloading",schema,table, "data")
         get_table_command = f'select * from "{schema}"."{table}"'
         self.cursor.execute(get_table_command)
-        mobile_records = self.cursor.fetchall()
-        mobile_records = pd.DataFrame(mobile_records).iloc[:, :2].astype('str')
-        mobile_records.iloc[:, 0] = mobile_records.iloc[:, 0].str.lower()
-        mobile_records.iloc[:, 1] = mobile_records.iloc[:, 1].str.lower()
+        mobile_records = pd.DataFrame(self.cursor.fetchall())
+        mobile_records = mobile_records.apply(lambda x: x.astype(str).str.lower())
         print("creating ", dst_file_path, "file")
         mobile_records.to_csv(dst_file_path,header=headers, index=False)
         print(dst_file_path, "created successfully!\n")
