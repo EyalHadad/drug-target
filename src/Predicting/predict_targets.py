@@ -10,9 +10,10 @@ import os
 
 def load_and_preprocessing(drug_id):
     d_path = os.path.join(r"../../data",drug_id+".csv")
+    dicts_path = "../../raw_data/for_train/dicts"
     data = pd.read_csv(d_path, index_col=False)
     print("---Train data was loaded---\n")
-    lbe = load(open(r"../../data/weight_scalar.pkl", 'rb'))
+    lbe = load(open(os.path.join(dicts_path,"weight_scalar.pkl"), 'rb'))
     data['weight'] = lbe.transform(data['weight'].values.reshape(-1, 1))
     print("---Transformed drug weight feature---\n")
     print(data.info)
@@ -22,9 +23,9 @@ def load_and_preprocessing(drug_id):
     return x,data['gene']
 
 
-def use_model(_x, _gene, drug_id):
-    m_path = os.path.join(r"../../output","5_reg_model.h5")
+def use_model(_x, _gene, drug_id,classifier):
     print("Loading model")
+    m_path = os.path.join(r"../../output", "%s_model.h5" % classifier)
     model = keras.models.load_model(m_path)
     print("Start predicting")
     predict_res = model.predict(_x)
@@ -35,9 +36,12 @@ def use_model(_x, _gene, drug_id):
     to_save.to_csv(os.path.join(r"../../output",drug_id+"_prediction.csv"),index=False)
 
 
-
 if __name__ == '__main__':
-    _drug_id = "DB00822"
+    pred_csv = pd.read_csv(r"C:\Users\Eyal-TLV\Desktop\drug-target\data\db03419.csv",nrows=5)
+    print(pred_csv.shape)
+    train_csv = pd.read_csv(r"C:\Users\Eyal-TLV\Desktop\drug-target\data\train.csv",nrows=5)
+    print(train_csv.shape)
+    _drug_id = "db03419"
     _x, gene = load_and_preprocessing(_drug_id)
-    use_model(_x, gene,_drug_id)
+    use_model(_x, gene,_drug_id,"4_reg")
     

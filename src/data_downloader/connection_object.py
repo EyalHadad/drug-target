@@ -59,6 +59,7 @@ class DataConnector(object):
         get_table_command = f'select * from "{schema}"."{table}"'
         self.cursor.execute(get_table_command)
         mobile_records = pd.DataFrame(self.cursor.fetchall())
+        mobile_records=mobile_records.iloc[:,:2]
         mobile_records = mobile_records.apply(lambda x: x.astype(str).str.lower())
         print("creating ", dst_file_path, "file")
         mobile_records.to_csv(dst_file_path,header=headers, index=False)

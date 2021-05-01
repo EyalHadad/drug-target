@@ -54,9 +54,10 @@ def calculate_clusters(x_unlabled, modalities_df, dir_path):
     print('done clustering')
     # Writing new data to disk
     x_unlabled=x_unlabled.apply(lambda x: x.astype(str).str.lower())
+    x_unlabled = x_unlabled.filter(regex=("Cluster 3600*"))
+    x_unlabled['drugBank_id'] = x_unlabled['drugBank_id'].str.lower()
     x_unlabled.to_csv(os.path.join(dir_path, 'drug_cluster_features.csv'))
     modalities_df.to_csv(os.path.join(dir_path,'modalities_w_text.csv'))
-
 
 
 

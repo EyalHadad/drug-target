@@ -38,7 +38,7 @@ def plot_model_configuration(model, opt):
 
 
 def save_model_and_results(model, history, opt):
-    model_path = os.path.join("../../output", opt + '_reg_model.h5')
+    model_path = os.path.join("../../output", opt + '_model.h5')
     print("---Save model---")
     save_model(model, model_path)
     print("---Save history and plot---")

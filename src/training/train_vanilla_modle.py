@@ -19,8 +19,8 @@ def train_model(opt,x,y,data_shape):
     print("---Save network configuration---\n")
     plot_model_configuration(model, opt)
     print("---Training---\n")
-    history = model.fit(x, y, batch_size=256, epochs=15, verbose=2, validation_split=0.2)
-    save_model_and_results(model, history, opt)
+    history = model.fit(x, y, batch_size=256, epochs=25, verbose=2, validation_split=0.2)
+    save_model_and_results(model+"_reg", history, opt)
 
 
 def load_and_preprocessing():
