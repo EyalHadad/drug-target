@@ -42,4 +42,4 @@ def save_model_and_results(model, history, opt):
     print("---Save model---")
     save_model(model, model_path)
     print("---Save history and plot---")
-    show_results(history, opt + "_reg")
+    show_results(history, opt)

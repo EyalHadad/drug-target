@@ -37,10 +37,10 @@ def use_model(_x, _gene, drug_id,classifier):
 
 
 if __name__ == '__main__':
-    pred_csv = pd.read_csv(r"C:\Users\Eyal-TLV\Desktop\drug-target\data\db03419.csv",nrows=5)
-    print(pred_csv.shape)
-    train_csv = pd.read_csv(r"C:\Users\Eyal-TLV\Desktop\drug-target\data\train.csv",nrows=5)
-    print(train_csv.shape)
+    # pred_csv = pd.read_csv(r"C:\Users\Eyal-TLV\Desktop\drug-target\data\db03419.csv",nrows=5)
+    # print(pred_csv.shape)
+    # train_csv = pd.read_csv(r"C:\Users\Eyal-TLV\Desktop\drug-target\data\train.csv",nrows=5)
+    # print(train_csv.shape)
     _drug_id = "db03419"
     _x, gene = load_and_preprocessing(_drug_id)
     use_model(_x, gene,_drug_id,"4_reg")
