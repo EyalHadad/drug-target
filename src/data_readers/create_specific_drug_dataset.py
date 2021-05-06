@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from src.data_readers.drug_target_reader import create_targets_dataset,create_drugs_dataset
+from src.data_readers.create_train_data import create_targets_dataset, create_drugs_dataset
 
 
 def create_drug_predicting_data(dir_path, drug_id=" "):

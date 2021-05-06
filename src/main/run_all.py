@@ -1,7 +1,7 @@
 from src.data_downloader.download_drugs import download_drugs_data
 from src.data_downloader.download_targets import download_targets_data
 from src.data_migration.drug_bank_features import get_drug_modalities_data
-from src.data_readers.drug_target_reader import create_training_data
+from src.data_readers.create_train_data import create_training_data
 from src.training.train_vanilla_modle import load_and_preprocessing,train_model
 
 
