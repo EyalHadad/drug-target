@@ -47,6 +47,7 @@ def load_and_preprocessing(target_data=None):
 
 
 if __name__ == '__main__':
-    _target_data = "tyms"
-    _x, _y, _data_shape = load_and_preprocessing(target_data=_target_data)
-    train_model("4",_x, _y, _data_shape,target_data=_target_data)
+    target_names = ['ifng', 'kat5', 'tyms', 'dhfr', 'tf', 'pdcd1', 'a2m']
+    for _target_data in target_names:
+        _x, _y, _data_shape = load_and_preprocessing(target_data=_target_data)
+        train_model("4",_x, _y, _data_shape,target_data=_target_data)

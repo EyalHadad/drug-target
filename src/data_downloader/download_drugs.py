@@ -28,6 +28,8 @@ def download_drugs_data(is_train,version):
     dir_path = "../../raw_data/for_"+is_train
     dw = DataConnector(user="drugsmaster", password="pass2DRUGS!")
     dw.connect()
+    table_name = "drug_Name_" + version
+    dw.get_table(schema="DrugBank", table=table_name, dst_file_path=os.path.join(dir_path, "drug_name.csv"),headers=['drugBank_id', 'name'])
     table_name = "Target_"+version
     dw.get_table(schema="DrugBank",table=table_name,dst_file_path=os.path.join(dir_path,"drug_target.csv"),headers=['drugBank_id','gene'])
     table_name = "Molecular_weight_"+version

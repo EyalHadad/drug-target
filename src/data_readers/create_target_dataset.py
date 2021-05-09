@@ -52,6 +52,8 @@ def create_target_predicting_data(dir_path, target_id=" ",with_label=False,neg_p
 
 if __name__ == '__main__':
     raw_data_files_path = "../../raw_data/for_train"
-    create_target_predicting_data(raw_data_files_path, 'tyms',with_label=False)
-    create_target_predicting_data(raw_data_files_path, 'tyms',with_label=True)
+    target_names = ['ifng','kat5', 'tyms','dhfr','tf','pdcd1','a2m']
+    for tar in target_names:
+        create_target_predicting_data(raw_data_files_path, tar,with_label=False)
+        create_target_predicting_data(raw_data_files_path, tar,with_label=True)
     i=9
