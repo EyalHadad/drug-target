@@ -4,8 +4,9 @@ from src.training.vanilla_models_configurations import train_model3,train_model4
 from src.training.training_handler import plot_model_configuration, save_model_and_results
 from pickle import load
 import numpy as np
+import os
 
-def train_model(opt,x,y,data_shape):
+def train_model(opt,x,y,data_shape,target_data=None):
     print("---Configure network---\n")
     model = None
     if opt == "3":
@@ -20,12 +21,18 @@ def train_model(opt,x,y,data_shape):
     plot_model_configuration(model, opt)
     print("---Training---\n")
     history = model.fit(x, y, batch_size=256, epochs=25, verbose=2, validation_split=0.2)
-    save_model_and_results(model, history,opt+"_reg")
+    if target_data is None:
+        model_name = opt+"_reg"
+    else:
+        model_name = target_data+"_"+opt + "_reg"
+    save_model_and_results(model, history,model_name)
 
 
-def load_and_preprocessing():
-
-    data = pd.read_csv(r"../../data/train.csv", index_col=False)
+def load_and_preprocessing(target_data=None):
+    if target_data is None:
+        data = pd.read_csv(r"../../data/train.csv", index_col=False)
+    else:
+        data = pd.read_csv(os.path.join(r"../../data","train_{0}.csv".format(target_data)), index_col=False)
     print("---Train data was loaded---\n")
     lbe = load(open(r"../../raw_data/for_train/dicts/weight_scalar.pkl", 'rb'))
     data['weight'] = lbe.transform(data['weight'].values.reshape(-1, 1))
@@ -40,5 +47,6 @@ def load_and_preprocessing():
 
 
 if __name__ == '__main__':
-    _x, _y, _data_shape = load_and_preprocessing()
-    train_model("4",_x, _y, _data_shape)
+    _target_data = "tyms"
+    _x, _y, _data_shape = load_and_preprocessing(target_data=_target_data)
+    train_model("4",_x, _y, _data_shape,target_data=_target_data)

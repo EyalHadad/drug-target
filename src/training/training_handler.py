@@ -37,9 +37,9 @@ def plot_model_configuration(model, opt):
     tf.keras.utils.plot_model(model, to_file=plot_path, show_shapes=True)
 
 
-def save_model_and_results(model, history, opt):
-    model_path = os.path.join("../../output", opt + '_model.h5')
+def save_model_and_results(model, history, name):
+    model_path = os.path.join("../../output", name + '_model.h5')
     print("---Save model---")
     save_model(model, model_path)
     print("---Save history and plot---")
-    show_results(history, opt)
+    show_results(history, name)
