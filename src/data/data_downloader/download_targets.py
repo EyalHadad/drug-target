@@ -31,7 +31,6 @@ def create_target_dicts():
 
 def download_targets_data(is_train):
     dir_path = os.path.join(EXTERNAL_PATH, is_train)
-    print("current path:\n", os.path.dirname(os.path.abspath(__file__)))
     dw = DataConnector(DATABASE_USERNAME, DATABASE_PASSWORD)
     dw.connect()
     dw.get_table(schema="uniport", table="gene", dst_file_path=os.path.join(dir_path, "protein_gene.csv"),
@@ -40,4 +39,12 @@ def download_targets_data(is_train):
                  headers=['protein', 'keywords'])
     dw.get_table(schema="uniport", table="taxonomic_lineage", dst_file_path=os.path.join(dir_path, "protein_taxon.csv"),
                  headers=['protein', 'taxon'])
+    dw.disconnect()
+
+
+def download_evaluation_data():
+    dw = DataConnector(DATABASE_USERNAME, DATABASE_PASSWORD)
+    dw.connect()
+    dw.get_table(schema="Cancer", table="cancer_drugs", dst_file_path=os.path.join(RAW_PATH, "cancer_drugs.csv"),
+                 headers=['drugBank_id', 'name'])
     dw.disconnect()

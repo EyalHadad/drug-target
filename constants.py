@@ -1,6 +1,7 @@
 
 
 EXTERNAL_PATH = "data/external"
+RAW_PATH = "data/raw"
 EXTERNAL_TRAIN_PATH = "data/external/train"
 EXTERNAL_TEST_PATH = "data/external/test"
 INTERIM_PATH = "data/interim"

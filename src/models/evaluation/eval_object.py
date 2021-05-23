@@ -52,6 +52,7 @@ class EvaluationObj:
         if self.is_target:
             self.add_col_names()
             self.add_belongs_to_training()
+            self.known_cancer_drug()
 
         self.pred_result.sort_values(by=['prediction'], ascending=False, inplace=True)
         self.pred_result.to_csv(os.path.join(MODELS_PREDICTION_PATH, "pred_{0}_{1}.csv".format(self.model_name, self.dest_name)),index=False)
@@ -66,3 +67,8 @@ class EvaluationObj:
         train_data = pd.read_csv(os.path.join(PROCESSED_TRAIN_PATH, "train_{0}.csv".format(self.dest_name)))
         labels = set(train_data[train_data['label'] == 1]['drugBank_id'])
         self.pred_result['belongs_to_train'] = self.pred_result.apply(lambda row: 1 if row['drugBank_id'] in labels else 0, axis=1)
+
+    def known_cancer_drug(self):
+        known_cancer_drugs = pd.read_csv(os.path.join(os.path.join(RAW_PATH, "cancer_drugs.csv")))
+        id_name_dict = pd.Series(known_cancer_drugs.name.values, index=known_cancer_drugs.drugBank_id).to_dict()
+        self.pred_result['cancer_drug'] = self.pred_result.apply(lambda row: 1 if row['drugBank_id'] in id_name_dict else 0, axis=1)
