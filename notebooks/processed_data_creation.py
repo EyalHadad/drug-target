@@ -5,6 +5,8 @@ if __name__ == '__main__':
     # create_all_training_data()
     # create train data for specific drug
     # create_drug_data('db03419')
+    israel = 4
+    print(israel)
     # create train and prediction data for specific target
     target_names = ['ifng', 'kat5', 'tyms', 'dhfr', 'tf', 'pdcd1', 'a2m']
     for tar in target_names:
