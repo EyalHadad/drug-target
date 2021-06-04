@@ -1,4 +1,40 @@
+from unittest.mock import inplace
+
 from src.data.data_creation.create_data_handler import *
+
+
+def convert_target_to_list(target, drug, dt_dict):
+    if target != 'nan':
+        return target.split(',')
+    elif drug in dt_dict:
+        return dt_dict[drug]
+    else:
+        return None
+
+
+def process_cancer_drugs():
+    print("---process cancer drugs---\n")
+    drug_target = pd.read_csv(os.path.join(EXTERNAL_TEST_PATH, 'drug_target.csv'))
+    drug_target = (drug_target.groupby(['drugBank_id']).agg({'gene': lambda x: x.tolist()}).reset_index())
+    drug_target_dict = dict(zip(drug_target.drugBank_id, drug_target.gene))
+    cancer_data = pd.read_csv(os.path.join(RAW_PATH, 'cancer_drugs.csv'),
+                              usecols=['drugBank_id', 'target', 'cancer_desc'])
+    cancer_data = cancer_data.apply(lambda x: x.astype(str).str.lower())
+    # convert str to list and fill targets from drugbank if exists
+    cancer_data['target'] = [convert_target_to_list(d_target, d_name, drug_target_dict) for d_name, d_target in
+                             zip(cancer_data['drugBank_id'], cancer_data['target'])]
+    cancer_data.dropna(inplace=True)
+    all_drugs = create_drugs_dataset(EXTERNAL_TEST_PATH).reset_index()
+    print("drugs with genes:", all_drugs.shape)
+    all_drugs.drop(['index','gene'],axis=1,inplace=True)
+    all_drugs = all_drugs.groupby('drugBank_id').first().reset_index()
+    print("all drugs:", all_drugs.shape)
+    all_drugs = all_drugs[all_drugs['drugBank_id'].isin(cancer_data['drugBank_id'])]
+    print("relevant drugs:", all_drugs.shape)
+    all_targets = create_targets_dataset(EXTERNAL_TEST_PATH, belong_to_drugs=set(cancer_data['target'].explode('target')))
+    print("relevant targets:", all_targets.shape)
+
+    i = 9
 
 
 def create_all_training_data():
