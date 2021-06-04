@@ -33,8 +33,13 @@ def process_cancer_drugs():
     print("relevant drugs:", all_drugs.shape)
     all_targets = create_targets_dataset(EXTERNAL_TEST_PATH, belong_to_drugs=set(cancer_data['target'].explode('target')))
     print("relevant targets:", all_targets.shape)
+    cancer_data_explode = cancer_data.explode('target').rename(columns={"cancer_desc": "label","target":"gene"}).reset_index(drop=True)
+    cancer_data_explode['label'] = cancer_data_explode['label'].replace({'false': 0, 'true': 1})
+    to_save = cancer_data_explode.merge(all_drugs,left_on='drugBank_id', right_on='drugBank_id').merge(all_targets,left_on='gene', right_on='gene')
+    to_save = shuffle(to_save)
+    to_save.to_csv(os.path.join(PROCESSED_TRAIN_PATH, "train_cancer.csv"), index=False)
+    print("---Cancer training data was created---\n")
 
-    i = 9
 
 
 def create_all_training_data():
