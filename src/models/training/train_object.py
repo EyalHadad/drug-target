@@ -1,8 +1,9 @@
 import pandas as pd
 from sklearn import metrics
+from tensorflow import keras
 from sklearn.model_selection import train_test_split
 from src.models.training.vanilla_models_configurations import *
-from src.models.training.training_handler import plot_model_configuration, save_model_and_results
+from src.models.training.training_handler import *
 import numpy as np
 import os
 from constants import *
@@ -53,19 +54,24 @@ class TrainObj:
         print("---Save network configuration---\n")
         # plot_model_configuration(model, self.model_name)
         print("---Training---\n")
-        history = model.fit(self.x, self.y, batch_size=256, epochs=5, verbose=2, validation_split=0.2)
+        history = model.fit(self.x, self.y, batch_size=256, epochs=20, verbose=2, validation_split=0.2)
         self.model = model
         save_model_and_results(model, history, self.model_name)
 
-    def predict_local(self, target_name=None):
+    def predict_local(self, target_name=None, use_existing=False):
         print("---Predicting local---\n")
+        if use_existing:
+            m_path = os.path.join(MODELS_OBJECTS_PATH, "model4_cancer.h5")
+            self.model = keras.models.load_model(m_path)
+        print("Start prediction")
         predict_res = self.model.predict(self.x_test)
         df_pred = pd.DataFrame(predict_res, columns=['prediction'])
         pred_result = pd.concat([self.y_test.reset_index(drop=True), df_pred], axis=1)
         pred_result.sort_values(by=['prediction'], ascending=False, inplace=True)
-        pred_result.to_csv(os.path.join(MODELS_PREDICTION_PATH, "pred_{0}_local.csv".format(target_name)), index=False)
-        fpr, tpr, thresholds = metrics.roc_curve(self.y_test, df_pred, pos_label=2)
-        auc = metrics.auc(fpr, tpr)
-        print("AUC:", auc)
-        accuracy = metrics.accuracy_score(self.y_test, df_pred)
-        print("ACC:", accuracy)
+        pred_result.to_csv(
+            os.path.join(MODELS_PREDICTION_PATH, "pred_{0}_{1}.csv".format(target_name, self.model_name)), index=False)
+        auc = metrics.roc_auc_score(self.y_test, df_pred)
+        aupr = metrics.average_precision_score(self.y_test, df_pred)
+        print("AUC {0}:".format(self.model_name), auc)
+        print("AUPR {0}:".format(self.model_name), aupr)
+        save_metrics(auc, aupr, self.model_name)

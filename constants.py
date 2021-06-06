@@ -10,7 +10,7 @@ PROCESSED_TRAIN_PATH = "data/processed/train"
 PROCESSED_EVALUATION_PATH = "data/processed/evaluation"
 MODELS_OBJECTS_PATH = "models/objects"
 MODELS_OUTPUT_PATH = "models/learning_output"
+MODELS_PATH = "models"
 MODELS_PREDICTION_PATH = "models/prediction"
-
 DATABASE_USERNAME = "drugsmaster"
 DATABASE_PASSWORD = "pass2DRUGS!"

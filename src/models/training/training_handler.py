@@ -1,7 +1,9 @@
 import pandas as pd
+from datetime import datetime
 from tensorflow.python.keras.models import save_model
 import tensorflow as tf
 import os
+import csv
 from matplotlib import pyplot as plt
 from constants import *
 
@@ -41,3 +43,14 @@ def save_model_and_results(model, history, name):
     save_model(model, model_path)
     print("---Save history and plot---")
     show_results(history, name)
+
+
+def save_metrics(auc, aupr, model_name):
+    f_path = os.path.join(MODELS_PATH, 'models_evaluation.csv')
+    with open(f_path, 'a') as file:
+        headers = ['Date', 'AUC', 'AUPR', 'Model']
+        writer = csv.DictWriter(file, delimiter=',', lineterminator='\n', fieldnames=headers)
+        if file.tell() == 0:
+            writer.writeheader()  # file doesn't exist yet, write a header
+        writer.writerow(
+            {'Date': datetime.now().strftime("%d/%m/%Y %H:%M:%S"), 'AUC': auc, 'AUPR': aupr, 'Model': model_name})

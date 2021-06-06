@@ -8,3 +8,4 @@
 *.out
 *.ipynb*
 *.vscode*
+!cancer_drugs.csv
