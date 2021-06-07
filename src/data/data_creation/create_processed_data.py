@@ -61,6 +61,17 @@ def create_all_training_data():
     print("---Training data was created---\n")
 
 
+def target_list_data_prediction(target_list):
+    dir_path = EXTERNAL_TRAIN_PATH
+    all_drugs = create_drugs_dataset(dir_path)
+    all_drugs = all_drugs.groupby('drugBank_id').first().reset_index().drop(['gene'], axis=1)
+    all_targets = create_targets_dataset(dir_path, belong_to_drugs=set(target_list))
+    total = all_drugs.merge(all_targets, how='cross')
+    total = shuffle(total)
+    f_name = os.path.join(PROCESSED_EVALUATION_PATH, "eval_{0}.csv".format("_".join(target_list)))
+    total.to_csv(f_name, index=False)
+
+
 def create_target_data(target_id=" ", for_train=False, neg_pos_ratio=1):
     print("---Create Target prediction data---\n")
     if for_train:

@@ -1,7 +1,8 @@
 from src.data.data_creation.create_processed_data import *
 
 if __name__ == '__main__':
-    process_cancer_drugs()
+    # process_cancer_drugs()
+    target_list_data_prediction(['brca1', 'ercc1', 'bcl2', 'apaf1'])
     # creating train and prediction data for all drugs&targets
     # create_all_training_data()
     # create train data for specific drug

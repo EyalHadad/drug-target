@@ -30,7 +30,7 @@ class EvaluationObj:
         x = np.asarray(x).astype('float32')
         print("---Finished load and preprocessing data---\n")
         if is_target:
-            ids = data['drugBank_id']
+            ids = data['drugBank_id', 'gene']
         else:
             ids = data['gene']
         self.x = x
