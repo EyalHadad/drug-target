@@ -6,6 +6,7 @@ import os
 import csv
 from matplotlib import pyplot as plt
 from constants import *
+from sklearn import metrics
 
 
 def show_results(history, name):
@@ -43,6 +44,14 @@ def save_model_and_results(model, history, name):
     save_model(model, model_path)
     print("---Save history and plot---")
     show_results(history, name)
+
+
+def calculate_auc_aupr(y_test, df_pred, model_name):
+    auc = metrics.roc_auc_score(y_test, df_pred)
+    aupr = metrics.average_pregcision_score(y_test, df_pred)
+    print("AUC {0}:".format(model_name), auc)
+    print("AUPR {0}:".format(model_name), aupr)
+    save_metrics(auc, aupr, model_name)
 
 
 def save_metrics(auc, aupr, model_name):

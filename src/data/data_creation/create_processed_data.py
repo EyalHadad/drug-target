@@ -1,4 +1,3 @@
-from unittest.mock import inplace
 
 from src.data.data_creation.create_data_handler import *
 
@@ -26,20 +25,23 @@ def process_cancer_drugs():
     cancer_data.dropna(inplace=True)
     all_drugs = create_drugs_dataset(EXTERNAL_TEST_PATH).reset_index()
     print("drugs with genes:", all_drugs.shape)
-    all_drugs.drop(['index','gene'],axis=1,inplace=True)
+    all_drugs.drop(['index', 'gene'], axis=1, inplace=True)
     all_drugs = all_drugs.groupby('drugBank_id').first().reset_index()
     print("all drugs:", all_drugs.shape)
     all_drugs = all_drugs[all_drugs['drugBank_id'].isin(cancer_data['drugBank_id'])]
     print("relevant drugs:", all_drugs.shape)
-    all_targets = create_targets_dataset(EXTERNAL_TEST_PATH, belong_to_drugs=set(cancer_data['target'].explode('target')))
+    all_targets = create_targets_dataset(EXTERNAL_TEST_PATH,
+                                         belong_to_drugs=set(cancer_data['target'].explode('target')))
     print("relevant targets:", all_targets.shape)
-    cancer_data_explode = cancer_data.explode('target').rename(columns={"cancer_desc": "label","target":"gene"}).reset_index(drop=True)
+    cancer_data_explode = cancer_data.explode('target').rename(
+        columns={"cancer_desc": "label", "target": "gene"}).reset_index(drop=True)
     cancer_data_explode['label'] = cancer_data_explode['label'].replace({'false': 0, 'true': 1})
-    to_save = cancer_data_explode.merge(all_drugs,left_on='drugBank_id', right_on='drugBank_id').merge(all_targets,left_on='gene', right_on='gene')
+    to_save = cancer_data_explode.merge(all_drugs, left_on='drugBank_id', right_on='drugBank_id').merge(all_targets,
+                                                                                                        left_on='gene',
+                                                                                                        right_on='gene')
     to_save = shuffle(to_save)
     to_save.to_csv(os.path.join(PROCESSED_TRAIN_PATH, "train_cancer.csv"), index=False)
     print("---Cancer training data was created---\n")
-
 
 
 def create_all_training_data():
@@ -144,12 +146,22 @@ def create_drug_data(drug_id=" "):
     print("---drug id ", drug_id, "was created---\n")
 
 
-def create_test_evaluation_data():
-    print("---Create Training data---\n")
+def create_test_evaluation_data(drug_diff_only=False):
+    print("---Create evaluation data---\n")
     all_drugs = create_drugs_dataset(EXTERNAL_TEST_PATH)
-    all_targets = create_targets_dataset(EXTERNAL_TEST_PATH, belong_to_drugs=set(all_drugs['gene']))
-    all_targets.drop(['protein'], axis=1, inplace=True)
-    evaluate_data = all_drugs.assign(key=0).merge(all_targets.assign(key=0), how='left', on='key')
+    belong_to_drugs=set(all_drugs['gene'])
+    all_drugs.drop(['gene'], axis=1, inplace=True)
+    all_drugs.drop_duplicates(subset=['drugBank_id'], keep='first',inplace=True)
+    if drug_diff_only:
+        print("Remove old drugs for evaluation")
+        print("current test version drugs shape:", all_drugs.shape)
+        old_drugs = set(pd.read_csv(os.path.join(EXTERNAL_TRAIN_PATH, 'drug_weight.csv'), usecols=['drugBank_id'])['drugBank_id'])
+        all_drugs = all_drugs[~all_drugs['drugBank_id'].isin(old_drugs)]
+        print("only new drugs:", all_drugs.shape)
+
+    all_targets = create_targets_dataset(EXTERNAL_TEST_PATH, belong_to_drugs=belong_to_drugs)
+
+    evaluate_data = all_drugs.assign(key=0).merge(all_targets.assign(key=0), how='left', on='key').drop(['key'],axis=1)
     print("\nDone cross merge with all combinations. total shape:", evaluate_data.shape)
     drug_gene_dict = dict()
     for drug_id, gene in zip(evaluate_data['drugBank_id'], evaluate_data['gene']):
@@ -157,5 +169,5 @@ def create_test_evaluation_data():
     evaluate_data['label'] = evaluate_data.apply(
         lambda row: 1 if row['gene'] in drug_gene_dict[row['drugBank_id']] else 0, axis=1)
 
-    evaluate_data.to_csv(os.path.join(PROCESSED_EVALUATION_PATH, "evaluate_data.csv"), index=False)
+    evaluate_data.to_csv(os.path.join(PROCESSED_EVALUATION_PATH, "eval_.csv"), index=False)
     print("---Evaluate_data data was created---\n")

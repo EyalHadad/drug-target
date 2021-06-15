@@ -2,6 +2,7 @@ from src.models.training.vanilla_models_configurations import *
 from tensorflow import keras
 import pandas as pd
 import numpy as np
+from src.models.training.training_handler import *
 import os
 from constants import *
 
@@ -20,19 +21,17 @@ class EvaluationObj:
         self.model_configuration_list = {"model3": train_model3, "model4": train_model4, "model5": train_model5,
                                          "model6": train_model6}
 
-    def load_and_preprocessing(self, dest_id, is_target=False):
+    def load_and_preprocessing(self, dest_id="", is_target=False):
         d_path = os.path.join(PROCESSED_EVALUATION_PATH, "eval_{0}.csv".format(dest_id))
         self.dest_name = dest_id
         self.is_target = is_target
         data = pd.read_csv(d_path, index_col=False)
         print("---Train data was loaded---\n")
-        x = data.drop(['drugBank_id', 'gene', 'protein'], axis=1)
+        x = data.drop(['drugBank_id', 'gene', 'protein', 'label'], axis=1)
         x = np.asarray(x).astype('float32')
+        self.y = data['label']
         print("---Finished load and preprocessing data---\n")
-        if is_target:
-            ids = data['drugBank_id', 'gene']
-        else:
-            ids = data['gene']
+        ids = data[['drugBank_id', 'gene']]
         self.x = x
         self.ids = ids
 
@@ -56,6 +55,7 @@ class EvaluationObj:
 
         self.pred_result.sort_values(by=['prediction'], ascending=False, inplace=True)
         self.pred_result.to_csv(os.path.join(MODELS_PREDICTION_PATH, "pred_{0}_{1}.csv".format(self.model_name, self.dest_name)),index=False)
+        calculate_auc_aupr(self.y, df_pred, self.model_name)
 
     def add_col_names(self):
         # TODO change drug name to test version

@@ -1,5 +1,4 @@
 import pandas as pd
-from sklearn import metrics
 from tensorflow import keras
 from sklearn.model_selection import train_test_split
 from src.models.training.vanilla_models_configurations import *
@@ -70,8 +69,7 @@ class TrainObj:
         pred_result.sort_values(by=['prediction'], ascending=False, inplace=True)
         pred_result.to_csv(
             os.path.join(MODELS_PREDICTION_PATH, "pred_{0}_{1}.csv".format(target_name, self.model_name)), index=False)
-        auc = metrics.roc_auc_score(self.y_test, df_pred)
-        aupr = metrics.average_precision_score(self.y_test, df_pred)
-        print("AUC {0}:".format(self.model_name), auc)
-        print("AUPR {0}:".format(self.model_name), aupr)
-        save_metrics(auc, aupr, self.model_name)
+
+        calculate_auc_aupr(self.y_test, df_pred, self.model_name)
+
+
